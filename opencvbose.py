@@ -39,14 +39,15 @@ facecascade = cv2.CascadeClassifier("/Library/Python/2.7/site-packages/cv2/data/
 fishface = cv2.face.FisherFaceRecognizer_create()
 
 try:
-    fishface.read("trained_emoclassifier.xml")
+    fishface.read("angry.xml")
 except:
     print("no xml found. Using --update will create one.")
 parser = argparse.ArgumentParser(description="Options for the emotion-based music player") #Create parser object
 parser.add_argument("--update", help="Call to grab new images and update the model accordingly", action="store_true") #Add --update argument
 args = parser.parse_args() #Store any given arguments in an object
 facedict = {}
-emotions = ["angry", "happy", "sad", "neutral"]
+emotions = ["angry", "happy", "sad"]
+
 def crop_face(clahe_image, face):
     for (x, y, w, h) in face:
         faceslice = clahe_image[y:y+h, x:x+w]
@@ -80,6 +81,7 @@ def save_face(emotion):
 def recognize_emotion():
     predictions = []
     confidence = []
+    if len(facedict.keys()) == 0: return
     for x in facedict.keys():
         pred, conf = fishface.predict(facedict[x])
         cv2.imwrite("images/%s.jpg" %x, facedict[x])
@@ -98,8 +100,8 @@ def detect_face():
     if len(face) == 1:
         faceslice = crop_face(clahe_image, face)
         return faceslice
-    else:
-        print("no/multiple faces detected, passing over frame")
+  ##  else:
+    ##    print("no/multiple faces detected, passing over frame")
         
 while True:
 
@@ -114,13 +116,14 @@ while True:
     if len(face) == 1: #Use simple check if one face is detected, or multiple (measurement error unless multiple persons on image)
         faceslice = crop_face(gray, face) #slice face from image
 ##        cv2.imshow("detect", faceslice) #display sliced face
-    else:
-        print("no/multiple faces detected, passing over frame")
+  ##  else:
+      ## print("no/multiple faces detected, passing over frame")
     cv2.imshow("webcam", frame) #Display frame
     if cv2.waitKey(1) & 0xFF == ord('q'): #imshow expects a termination definition to work correctly, here it is bound to key 'q'
         break
     
     detect_face()
+    recognize_emotion()
     if args.update: #If update flag is present, call update function
         update_model(emotions)
         break
