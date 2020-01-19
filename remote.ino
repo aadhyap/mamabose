@@ -124,7 +124,7 @@ void happy(){
     WiFiClient client;
     HTTPClient http;
 
-    USE_SERIAL.print("[HTTP] begin...\n");
+    USE_SERIAL.print("[HThttpTP] begin...\n");
     // configure traged server and url
     http.begin(client, "http://"  SERVER_IP  "/speaker"); //HTTP
     http.addHeader("Content-Type", "application/xml");
