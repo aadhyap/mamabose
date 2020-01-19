@@ -7,6 +7,10 @@ fishface = cv2.face.FisherFaceRecognizer_create()
 
 data = {}
 
+braincells = []
+
+our_emotions = ["angry", "happy", "sad"]
+
 def make_sets(emotions):
     training_data = []
     training_labels = []
@@ -31,5 +35,8 @@ def run_recognizer(emotions):
 def update(emotions):
     run_recognizer(emotions)
     print("saving model")
-    fishface.save("trained_emoclassifier.xml")
+    fishface.save("angry.xml")
     print("model saved!")
+
+if __name__ == "__main__":
+    update(our_emotions)
